@@ -4,6 +4,7 @@ const Home = () => import("../pages/Home.vue");
 const Catalog = () => import("../pages/Catalog.vue");
 const Contacts = () => import("../pages/Contacts.vue");
 const Admin = () => import("../pages/Admin.vue");
+const Dev = () => import("../pages/Dev.vue");
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,6 +24,10 @@ const router = createRouter({
     {
       path: "/admin",
       component: Admin,
+    },
+    {
+      path: "/dev",
+      component: Dev,
     },
   ],
 });
