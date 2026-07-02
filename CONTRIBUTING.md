@@ -37,7 +37,6 @@ Examples:
 When adding a major feature, update:
 
 - ROADMAP.md
-- PROJECT_VISION.md (if needed)
 - CHANGELOG.md
 
 ---
