@@ -1,32 +1,29 @@
-<template>
-  <router-view />
-</template>
-
 <script setup>
+import NavBar from '@/components/layout/NavBar.vue'
+import Footer from '@/components/layout/Footer.vue'
 </script>
 
+<template>
+  <div class="app">
+    <NavBar />
+
+    <main class="app__main">
+      <RouterView />
+    </main>
+
+    <Footer />
+  </div>
+</template>
+
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-html,
-body,
-#app{
-  width:100%;
-  min-height:100%;
-}
-
-body{
-  background:#0F1115;
-  color:#F5F7FA;
-  font-family:
-    Inter,
-    "Segoe UI",
-    Roboto,
-    Arial,
-    sans-serif;
+.app__main {
+  flex: 1;
+  padding-top: 72px;
 }
 </style>
