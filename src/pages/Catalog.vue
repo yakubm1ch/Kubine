@@ -1,215 +1,66 @@
-<template>
-  <section class="catalog">
-
-    <header class="catalog-header">
-
-      <div>
-        <h1>Каталог</h1>
-
-        <p>
-          Компоненти, модулі, інструменти та все для Embedded-розробки.
-        </p>
-      </div>
-
-      <button
-        class="refresh"
-        @click="loadProducts"
-      >
-        Оновити
-      </button>
-
-    </header>
-
-    <SearchBar
-      v-model="search"
-    />
-
-    <CategoryFilter
-      v-model="selectedCategory"
-      :categories="categories"
-    />
-
-    <div
-      v-if="loading"
-      class="loading"
-    >
-      Завантаження каталогу...
-    </div>
-
-    <ProductGrid
-      v-else
-      :products="filteredProducts"
-    />
-
-  </section>
-</template>
-
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { onMounted } from "vue";
+import { storeToRefs } from "pinia";
+import { useCatalogStore } from "../stores/catalog.store";
 
-import SearchBar from "../components/product/SearchBar.vue";
-import CategoryFilter from "../components/product/CategoryFilter.vue";
-import ProductGrid from "../components/product/ProductGrid.vue";
+const catalog = useCatalogStore();
 
-import { getProducts } from "../services/products";
+const {
+  products,
+  loading,
+  error,
+  productCount,
+} = storeToRefs(catalog);
 
-const products = ref([]);
-const loading = ref(true);
-
-const search = ref("");
-const selectedCategory = ref("Усі");
-
-const categories = computed(() => {
-
-  const list = products.value
-    .map(product => product.category)
-    .filter(Boolean);
-
-  return ["Усі", ...new Set(list)];
-
+onMounted(() => {
+  catalog.loadProducts();
 });
-
-const filteredProducts = computed(() => {
-
-  let list = products.value;
-
-  if (selectedCategory.value !== "Усі") {
-
-    list = list.filter(
-      product => product.category === selectedCategory.value
-    );
-
-  }
-
-  if (!search.value.trim()) {
-
-    return list;
-
-  }
-
-  const q = search.value.toLowerCase();
-
-  return list.filter(product => {
-
-    return (
-
-      product.name?.toLowerCase().includes(q) ||
-
-      product.description?.toLowerCase().includes(q) ||
-
-      product.category?.toLowerCase().includes(q)
-
-    );
-
-  });
-
-});
-
-async function loadProducts() {
-
-  loading.value = true;
-
-  products.value = await getProducts();
-
-  loading.value = false;
-
-}
-
-onMounted(loadProducts);
 </script>
 
-<style scoped>
+<template>
+  <div class="max-w-7xl mx-auto px-6 py-12">
 
-.catalog{
+    <h1 class="text-4xl font-bold mb-2">
+      Catalog
+    </h1>
 
-max-width:1400px;
+    <p class="text-gray-400 mb-8">
+      Products: {{ productCount }}
+    </p>
 
-margin:auto;
+    <div v-if="loading">
+      Loading products...
+    </div>
 
-padding:60px 32px;
+    <div
+      v-else-if="error"
+      class="text-red-500"
+    >
+      {{ error }}
+    </div>
 
-}
+    <div
+      v-else
+      class="grid gap-6"
+    >
+      <div
+        v-for="product in products"
+        :key="product.id"
+        class="p-5 rounded-xl border border-neutral-700 bg-neutral-900"
+      >
+        <h2 class="text-xl font-semibold">
+          {{ product.name }}
+        </h2>
 
-.catalog-header{
+        <p class="text-neutral-400 mt-2">
+          {{ product.description }}
+        </p>
 
-display:flex;
+        <div class="mt-3 text-emerald-400 font-bold">
+          {{ product.price }}
+        </div>
+      </div>
+    </div>
 
-justify-content:space-between;
-
-align-items:center;
-
-gap:20px;
-
-margin-bottom:40px;
-
-}
-
-.catalog-header h1{
-
-font-size:48px;
-
-margin-bottom:10px;
-
-color:#00C896;
-
-}
-
-.catalog-header p{
-
-font-size:18px;
-
-color:#9CA3AF;
-
-}
-
-.refresh{
-
-padding:12px 20px;
-
-border:none;
-
-border-radius:12px;
-
-background:#00C896;
-
-color:#111827;
-
-font-weight:700;
-
-cursor:pointer;
-
-transition:.25s;
-
-}
-
-.refresh:hover{
-
-transform:translateY(-2px);
-
-}
-
-.loading{
-
-padding:100px;
-
-text-align:center;
-
-font-size:20px;
-
-color:#9CA3AF;
-
-}
-
-@media(max-width:900px){
-
-.catalog-header{
-
-flex-direction:column;
-
-align-items:flex-start;
-
-}
-
-}
-
-</style>
+  </div>
+</template>
