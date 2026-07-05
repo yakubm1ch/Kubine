@@ -1,29 +1,18 @@
-<script setup>
-import NavBar from '@/components/layout/NavBar.vue'
-import Footer from '@/components/layout/Footer.vue'
-</script>
-
 <template>
-  <div class="app">
-    <NavBar />
-
-    <main class="app__main">
-      <RouterView />
-    </main>
-
-    <Footer />
-  </div>
+  <RouterView />
 </template>
 
 <style>
-.app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+
+html,
+body,
+#app{
+
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+
 }
 
-.app__main {
-  flex: 1;
-  padding-top: 72px;
-}
 </style>

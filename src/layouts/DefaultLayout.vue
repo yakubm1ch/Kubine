@@ -1,72 +1,67 @@
-<template>
-  <div class="layout">
+<script setup>
+import NavBar from "../components/layout/NavBar.vue";
+import MobileMenu from "../components/layout/MobileMenu.vue";
+import Footer from "../components/layout/Footer.vue";
 
-    <header class="header">
-      <h1>TinkerSpace</h1>
-    </header>
+import { ref, provide } from "vue";
+
+const mobileMenuOpen = ref(false);
+
+function openMenu() {
+  mobileMenuOpen.value = true;
+}
+
+function closeMenu() {
+  mobileMenuOpen.value = false;
+}
+
+provide("openMenu", openMenu);
+provide("closeMenu", closeMenu);
+provide("mobileMenuOpen", mobileMenuOpen);
+</script>
+
+<template>
+
+<div class="layout">
+
+    <NavBar />
+
+    <MobileMenu />
 
     <main class="content">
-      <slot />
+
+        <RouterView />
+
     </main>
 
-    <footer class="footer">
-      © 2026 TinkerSpace
-    </footer>
+    <Footer />
 
-  </div>
+</div>
+
 </template>
 
 <style scoped>
 
 .layout{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
 
-.header{
-  height:72px;
+min-height:100vh;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+display:flex;
 
-  border-bottom:1px solid #232832;
+flex-direction:column;
 
-  background:#171B22;
-}
+background:#0E1117;
 
-.header h1{
-  color:#00C896;
+color:white;
 
-  font-size:28px;
-  font-weight:700;
-  letter-spacing:1px;
 }
 
 .content{
-  flex:1;
 
-  display:flex;
-  align-items:center;
-  justify-content:center;
+flex:1;
 
-  padding:40px;
-}
+padding-top:72px;
 
-.footer{
-
-  height:60px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-top:1px solid #232832;
-
-  color:#9CA3AF;
-
-  background:#171B22;
 }
 
 </style>

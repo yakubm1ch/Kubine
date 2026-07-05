@@ -1,58 +1,176 @@
 <script setup>
-const currentYear = new Date().getFullYear()
+import { RouterLink } from "vue-router";
+import { publicNavigation } from "@/config/navigation";
+
+const currentYear = new Date().getFullYear();
 </script>
 
 <template>
   <footer class="footer">
-    <div class="footer__container">
-      <p>© {{ currentYear }} TinkerSpace</p>
 
-      <nav class="footer__links">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/catalog">Catalog</RouterLink>
-        <RouterLink to="/projects">Projects</RouterLink>
-        <RouterLink to="/contact">Contact</RouterLink>
+    <div class="footer__container">
+
+      <div class="footer__brand">
+        <RouterLink
+          to="/"
+          class="footer__logo"
+        >
+          <AppLogo />
+        </RouterLink>
+
+        <p class="footer__copyright">
+          © {{ currentYear }} <AppLogo />
+          <br>
+          Built with passion.
+        </p>
+      </div>
+
+      <nav
+        class="footer__links"
+        aria-label="Footer navigation"
+      >
+        <RouterLink
+          v-for="item in publicNavigation"
+          :key="item.path"
+          :to="item.path"
+        >
+          {{ item.name }}
+        </RouterLink>
       </nav>
+
     </div>
+
   </footer>
 </template>
 
 <style scoped>
-.footer {
-  margin-top: auto;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-surface);
+
+.footer{
+
+margin-top:auto;
+
+background:#11151D;
+
+border-top:1px solid #232A35;
+
 }
 
-.footer__container {
-  max-width: var(--content-max);
-  margin: 0 auto;
-  padding: 1.5rem var(--content-pad);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
+.footer__container{
+
+max-width:1400px;
+
+margin:0 auto;
+
+padding:36px 32px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+gap:48px;
+
+flex-wrap:wrap;
+
 }
 
-.footer__links {
-  display: flex;
-  gap: 1rem;
+.footer__brand{
+
+display:flex;
+
+flex-direction:column;
+
+gap:12px;
+
 }
 
-.footer__links a {
-  color: var(--color-text-muted);
-  text-decoration: none;
+.footer__logo{
+
+font-size:24px;
+
+font-weight:700;
+
+color:white;
+
+text-decoration:none;
+
+letter-spacing:-0.02em;
+
+transition:.2s;
+
 }
 
-.footer__links a:hover {
-  color: var(--color-accent);
+.footer__logo:hover{
+
+color:#00C896;
+
 }
 
-@media (max-width: 640px) {
-  .footer__container {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.footer__copyright{
+
+font-size:14px;
+
+line-height:1.6;
+
+color:#8A94A6;
+
 }
+
+.footer__links{
+
+display:flex;
+
+flex-wrap:wrap;
+
+gap:18px;
+
+}
+
+.footer__links a{
+
+text-decoration:none;
+
+color:#C7CCD6;
+
+font-size:15px;
+
+transition:.2s;
+
+}
+
+.footer__links a:hover{
+
+color:#00C896;
+
+}
+
+.router-link-active{
+
+color:#00C896;
+
+}
+
+@media(max-width:768px){
+
+.footer__container{
+
+flex-direction:column;
+
+padding:28px 20px;
+
+gap:28px;
+
+}
+
+.footer__links{
+
+flex-direction:column;
+
+gap:14px;
+
+}
+
+}
+
 </style>
