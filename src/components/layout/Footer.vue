@@ -1,4 +1,5 @@
 <script setup>
+import AppLogo from "@/components/ui/AppLogo.vue";
 import { RouterLink } from "vue-router";
 import { publicNavigation } from "@/config/navigation";
 
@@ -11,6 +12,7 @@ const currentYear = new Date().getFullYear();
     <div class="footer__container">
 
       <div class="footer__brand">
+
         <RouterLink
           to="/"
           class="footer__logo"
@@ -19,10 +21,11 @@ const currentYear = new Date().getFullYear();
         </RouterLink>
 
         <p class="footer__copyright">
-          © {{ currentYear }} <AppLogo />
+          © {{ currentYear }} TinkerSpace
           <br>
           Built with passion.
         </p>
+
       </div>
 
       <nav
@@ -49,9 +52,9 @@ const currentYear = new Date().getFullYear();
 
 margin-top:auto;
 
-background:#11151D;
+background:var(--surface-primary);
 
-border-top:1px solid #232A35;
+border-top:1px solid var(--border-primary);
 
 }
 
@@ -85,35 +88,13 @@ gap:12px;
 
 }
 
-.footer__logo{
-
-font-size:24px;
-
-font-weight:700;
-
-color:white;
-
-text-decoration:none;
-
-letter-spacing:-0.02em;
-
-transition:.2s;
-
-}
-
-.footer__logo:hover{
-
-color:#00C896;
-
-}
-
 .footer__copyright{
 
 font-size:14px;
 
 line-height:1.6;
 
-color:#8A94A6;
+color:var(--text-muted);
 
 }
 
@@ -131,7 +112,7 @@ gap:18px;
 
 text-decoration:none;
 
-color:#C7CCD6;
+color:var(--text-secondary);
 
 font-size:15px;
 
@@ -141,13 +122,13 @@ transition:.2s;
 
 .footer__links a:hover{
 
-color:#00C896;
+color:var(--brand-accent);
 
 }
 
 .router-link-active{
 
-color:#00C896;
+color:var(--brand-accent);
 
 }
 

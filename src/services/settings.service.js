@@ -3,24 +3,30 @@ import { supabase } from "../lib/supabase";
 const TABLE = "site_settings";
 
 export async function getSettings() {
+
   const { data, error } = await supabase
     .from(TABLE)
-    .select("*");
+    .select("*")
+    .limit(1)
+    .single();
 
   if (error) throw error;
 
   return data;
+
 }
 
-export async function updateSetting(key, value) {
+export async function updateSettings(settings) {
+
   const { data, error } = await supabase
     .from(TABLE)
-    .update({ value })
-    .eq("key", key)
+    .update(settings)
+    .eq("id", settings.id)
     .select()
     .single();
 
   if (error) throw error;
 
   return data;
+
 }

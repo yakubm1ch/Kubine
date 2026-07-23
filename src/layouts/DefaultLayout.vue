@@ -1,9 +1,15 @@
 <script setup>
-import NavBar from "../components/layout/NavBar.vue";
-import MobileMenu from "../components/layout/MobileMenu.vue";
-import Footer from "../components/layout/Footer.vue";
+import { ref, provide, onMounted } from "vue";
+import NavBar from "@/components/layout/NavBar.vue";
+import MobileMenu from "@/components/layout/MobileMenu.vue";
+import Footer from "@/components/layout/Footer.vue";
+import { useSettingsStore } from "@/stores/settings.store";
 
-import { ref, provide } from "vue";
+const settings = useSettingsStore();
+
+onMounted(() => {
+  settings.loadSettings();
+});
 
 const mobileMenuOpen = ref(false);
 
@@ -21,47 +27,35 @@ provide("mobileMenuOpen", mobileMenuOpen);
 </script>
 
 <template>
-
-<div class="layout">
+  <div class="layout">
 
     <NavBar />
 
     <MobileMenu />
 
     <main class="content">
-
-        <RouterView />
-
+      <RouterView />
     </main>
 
     <Footer />
 
-</div>
-
+  </div>
 </template>
 
 <style scoped>
 
 .layout{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 
-min-height:100vh;
-
-display:flex;
-
-flex-direction:column;
-
-background:#0E1117;
-
-color:white;
-
+  background:var(--surface-secondary);
+  color:var(--text-primary);
 }
 
 .content{
-
-flex:1;
-
-padding-top:72px;
-
+  flex:1;
+  padding-top:72px;
 }
 
 </style>
