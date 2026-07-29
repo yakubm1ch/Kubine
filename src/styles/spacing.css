@@ -1,0 +1,56 @@
+:root{
+
+/* ========================= */
+/* Radius                    */
+/* ========================= */
+
+--radius-xs:4px;
+--radius-sm:8px;
+--radius-md:12px;
+--radius-lg:16px;
+--radius-xl:20px;
+--radius-round:999px;
+
+
+/* ========================= */
+/* Spacing                   */
+/* ========================= */
+
+--space-1:4px;
+--space-2:8px;
+--space-3:12px;
+--space-4:16px;
+--space-5:20px;
+--space-6:24px;
+--space-7:32px;
+--space-8:40px;
+--space-9:48px;
+--space-10:64px;
+--space-11:72px;
+--space-12:96px;
+
+
+/* ========================= */
+/* Component sizes           */
+/* ========================= */
+
+--size-xs:24px;
+--size-sm:32px;
+--size-md:40px;
+--size-lg:44px;
+--size-xl:48px;
+--size-2xl:56px;
+--size-3xl:64px;
+
+
+/* ========================= */
+/* Layout                    */
+/* ========================= */
+
+--navbar-height:72px;
+
+--sidebar-width:280px;
+
+--container-width:1400px;
+
+}

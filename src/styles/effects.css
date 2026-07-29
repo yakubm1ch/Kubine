@@ -1,0 +1,48 @@
+:root{
+
+/* ========================= */
+/* Transitions               */
+/* ========================= */
+
+--transition-fast:150ms ease;
+
+--transition-normal:250ms ease;
+
+--transition-slow:400ms ease;
+
+
+/* ========================= */
+/* Shadows                   */
+/* ========================= */
+
+--shadow-xs:0 1px 3px rgba(0,0,0,.05);
+
+--shadow-sm:0 2px 8px rgba(0,0,0,.08);
+
+--shadow-md:0 8px 24px rgba(0,0,0,.12);
+
+--shadow-lg:0 16px 48px rgba(0,0,0,.18);
+
+--shadow-xl:0 24px 64px rgba(0,0,0,.24);
+
+
+/* ========================= */
+/* Blur                      */
+/* ========================= */
+
+--blur-sm:4px;
+
+--blur-md:8px;
+
+--blur-lg:16px;
+
+
+/* ========================= */
+/* Opacity                   */
+/* ========================= */
+
+--opacity-hover:.92;
+
+--opacity-disabled:.5;
+
+}

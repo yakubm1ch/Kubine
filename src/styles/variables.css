@@ -1,51 +1,72 @@
-:root{
+:root {
 
-/* ======================================== */
-/* Brand                                    */
-/* ======================================== */
+/* ===========================================
+   COLORS
+=========================================== */
 
---brand-primary:#FACC15;
+--color-background: var(--color-background);
+--color-surface: var(--color-surface);
+--color-surface-alt: var(--color-surface-alt);
 
---brand-accent:#00C896;
+--color-primary: var(--color-primary);
+--color-secondary: var(--color-secondary);
 
+--color-border: var(--color-border);
 
-/* ======================================== */
-/* Neutral                                  */
-/* ======================================== */
-
---color-white:#FFFFFF;
-
---color-light:#FCFCFC;
-
---color-dark:#1F1F1F;
+--color-text: var(--color-text);
+--color-text-secondary: var(--color-text-secondary);
+--color-text-muted: var(--color-text-muted);
 
 
-/* ======================================== */
-/* Backgrounds                              */
-/* ======================================== */
+/* ===========================================
+   SEMANTIC COLORS
+=========================================== */
 
---surface-secondary:#0E1117;
+--surface-primary: var(--color-surface);
+--surface-secondary: var(--color-surface-alt);
 
---surface-primary:#11151D;
+--brand-primary: var(--color-primary);
+--brand-secondary: var(--color-secondary);
 
---surface-hover:#1A2130;
+--border-primary: var(--color-border);
 
-
-/* ======================================== */
-/* Borders                                  */
-/* ======================================== */
-
---border-primary:#232A35;
+--text-primary: var(--color-text);
+--text-secondary: var(--color-text-secondary);
+--text-muted: var(--color-text-muted);
 
 
-/* ======================================== */
-/* Typography                               */
-/* ======================================== */
+/* ===========================================
+   TYPOGRAPHY
+=========================================== */
 
---text-primary:var(--color-white);
+--font-family: var(--font-family);
 
---text-secondary:#C7CCD6;
 
---text-muted:#8A94A6;
+/* ===========================================
+   SPACING
+=========================================== */
+
+--spacing-xs: var(--spacing-xs);
+--spacing-sm: var(--spacing-sm);
+--spacing-md: var(--spacing-md);
+--spacing-lg: var(--spacing-lg);
+--spacing-xl: var(--spacing-xl);
+
+
+/* ===========================================
+   RADIUS
+=========================================== */
+
+--radius-sm: var(--radius-sm);
+--radius-md: var(--radius-md);
+--radius-lg: var(--radius-lg);
+
+
+/* ===========================================
+   LAYOUT
+=========================================== */
+
+--container-width: var(--container-width);
+--navbar-height: var(--navbar-height);
 
 }
