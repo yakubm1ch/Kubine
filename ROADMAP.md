@@ -1,99 +1,105 @@
-# Roadmap
+# Kubine Roadmap
 
-## ✅ Phase 1 — Foundation
+## Phase 1 — Engine Foundation ✅
 
-- [x] GitHub repository
-- [x] Branch workflow
-- [x] Vue
-- [x] Vue Router
-- [x] Pinia
-- [x] TailwindCSS
-- [x] Base layout
-- [x] Initial project architecture
-
----
-
-## 🚧 Phase 2 — Frontend
-
-### Home
-
-- [ ] Landing page redesign
-- [ ] 3D navigation
-- [ ] Hero animation
-
-### Catalog
-
-- [ ] Product grid
-- [ ] Categories
-- [ ] Search
-- [ ] Filters
-- [ ] Product page
-
-### User
-
-- [ ] Wishlist
-- [ ] Shopping cart
-
-### Content
-
-- [ ] Blog
-- [ ] Portfolio
-- [ ] Contacts
+* [x] Git repository
+* [x] Branch workflow
+* [x] Vue Runtime
+* [x] Vue Router
+* [x] Pinia
+* [x] Runtime bootstrap
+* [x] Service layer
+* [x] Store layer
+* [x] Initial architecture
+* [x] Demo project (TinkerSpace)
 
 ---
 
-## 🗄 Phase 3 — Backend
+## Phase 2 — Runtime Core 🚧
 
-- [ ] Supabase
-- [ ] Database
-- [ ] Storage
-- [ ] Authentication
-- [ ] Google Login
-- [ ] GitHub Login
-
----
-
-## ⚙️ Phase 4 — Admin CMS
-
-- [ ] Dashboard
-- [ ] Products
-- [ ] Blog
-- [ ] Portfolio
-- [ ] Contacts
-- [ ] Site settings
-- [ ] Analytics
+* [ ] Engine lifecycle
+* [ ] Runtime initialization
+* [ ] Configuration system
+* [ ] Theme engine
+* [ ] User preferences
+* [ ] Storage abstraction
+* [ ] Asset management
 
 ---
 
-## 🛒 Phase 5 — E-commerce
+## Phase 3 — Database Engine
 
-- [ ] Orders
-- [ ] Checkout
-- [ ] Payment system
-
----
-
-## 🔒 Phase 6 — Security
-
-- [ ] Role system
-- [ ] Protected admin panel
-- [ ] Rate limiting
-- [ ] Backups
+* [ ] Universal database schema
+* [ ] Migration system
+* [ ] Seed system
+* [ ] Database adapters
+* [ ] Supabase provider
+* [ ] PostgreSQL provider
+* [ ] MySQL provider
+* [ ] SQLite provider
 
 ---
 
-## 📊 Phase 7 — Analytics
+## Phase 4 — Module Engine
 
-- [ ] Traffic
-- [ ] Product views
-- [ ] Conversion tracking
-- [ ] Marketing dashboard
+* [ ] Module manifest
+* [ ] Module registry
+* [ ] Runtime discovery
+* [ ] Installation system
+* [ ] Dependency resolver
+* [ ] Enable / Disable modules
+* [ ] Automatic registration
 
 ---
 
-## 🚀 Phase 8 — Release
+## Phase 5 — Administration
 
-- [ ] Production deployment
-- [ ] Domain
-- [ ] Monitoring
-- [ ] Performance optimization
+* [ ] Engine Dashboard
+* [ ] Module Manager
+* [ ] Theme Manager
+* [ ] Asset Manager
+* [ ] Navigation Builder
+* [ ] Configuration Editor
+
+---
+
+## Phase 6 — Security
+
+* [ ] Authentication abstraction
+* [ ] Authorization
+* [ ] Roles
+* [ ] Permissions
+* [ ] Audit logs
+* [ ] Security policies
+
+---
+
+## Phase 7 — Official Modules
+
+* [ ] Blog
+* [ ] Shop
+* [ ] Portfolio
+* [ ] Forms
+* [ ] Wiki
+* [ ] CRM
+* [ ] Analytics
+
+---
+
+## Phase 8 — Developer Experience
+
+* [ ] Kubine CLI
+* [ ] Project Generator
+* [ ] Module Generator
+* [ ] Documentation Generator
+* [ ] Hot Module Registration
+
+---
+
+## Phase 9 — Release
+
+* [ ] Kubine v1.0
+* [ ] Complete documentation
+* [ ] API Reference
+* [ ] Stable release
+* [ ] Public launch

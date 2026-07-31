@@ -1,8 +1,10 @@
+import "@/core/database/providers/provider.bootstrap.js";
+
 import { useProjectProfileStore } from "@/modules/settings/stores/projectProfile.store";
 import { useSettingsStore } from "@/modules/settings/stores/settings.store";
 
-import { applyTheme } from "./theme.engine";
-import { applyProjectMetadata } from "./document.engine";
+import { applyTheme } from "@/core/theme/engine/theme.engine";
+import { applyProjectMetadata } from "@/core/content/document/document.engine";
 
 export async function bootstrap() {
 

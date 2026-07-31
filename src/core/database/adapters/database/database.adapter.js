@@ -1,10 +1,11 @@
-import SupabaseProvider from "@/core/database/providers/supabase.provider";
+import { providerEngine } from "@/core/database/engine/provider.engine.js";
 
-const supabase = SupabaseProvider.getClient();
+const provider = providerEngine.getProvider("supabase");
+const client = provider.getClient();
 
 class DatabaseAdapter {
   async select(table, columns = "*", options = {}) {
-    let request = supabase
+    let request = client
       .from(table)
       .select(columns);
 
@@ -35,7 +36,7 @@ class DatabaseAdapter {
   }
 
   async insert(table, payload, options = {}) {
-    let request = supabase
+    let request = client
       .from(table)
       .insert(payload);
 
@@ -51,7 +52,7 @@ class DatabaseAdapter {
   }
 
   async update(table, payload, filters = {}, options = {}) {
-    let request = supabase
+    let request = client
       .from(table)
       .update(payload);
 
@@ -71,7 +72,7 @@ class DatabaseAdapter {
   }
 
   async delete(table, filters = {}) {
-    let request = supabase
+    let request = client
       .from(table)
       .delete();
 
@@ -83,7 +84,7 @@ class DatabaseAdapter {
   }
 
   getStorage() {
-    return SupabaseProvider.getStorage();
+    return provider.getStorage();
   }
 }
 

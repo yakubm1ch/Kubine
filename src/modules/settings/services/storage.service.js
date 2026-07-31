@@ -1,14 +1,12 @@
-import { getProvider } from "@/core/database/provider.engine";
+import { providerEngine } from "@/core/database/engine/provider.engine.js";
 
-const provider = getProvider();
+const provider = providerEngine.getProvider("supabase");
+
 const storage = provider.getStorage();
 
 const PRODUCT_BUCKET = "product-images";
 const MEDIA_BUCKET = "media";
 
-/*
- * Завантаження файлу
- */
 
 export async function uploadImage(file) {
 
@@ -32,9 +30,6 @@ export async function uploadImage(file) {
 
 }
 
-/*
- * Видалення файлу
- */
 
 export async function deleteImage(url) {
 
@@ -48,9 +43,6 @@ export async function deleteImage(url) {
 
 }
 
-/*
- * Public URL
- */
 
 export function getStorageUrl(path) {
 

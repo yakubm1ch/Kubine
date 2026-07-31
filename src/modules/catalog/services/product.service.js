@@ -1,4 +1,4 @@
-import Database from "@/core/database/database.adapter";
+import Database from "@/core/database/adapters/database/database.adapter";
 
 const TABLE = "products";
 
