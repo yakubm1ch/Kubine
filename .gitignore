@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Kubine local artifacts (Stabilization Sprint WO-02) .playwright-mcp/ .kubine/
