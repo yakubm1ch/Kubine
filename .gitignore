@@ -24,3 +24,9 @@ dist-ssr
 *.sw?
 
 # Kubine local artifacts (Stabilization Sprint WO-02) .playwright-mcp/ .kubine/
+
+# Kubine AI chat artifacts (WO-05a)
+deepseek-*.yml
+gemini-*.yml
+gpt-*.yml
+chat-*.yml
