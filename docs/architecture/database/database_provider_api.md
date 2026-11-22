@@ -8,7 +8,7 @@ The Engine NEVER communicates with Supabase, PocketBase, Firebase or PostgreSQL 
 
 Instead it communicates only with a Provider Interface.
 
-Every provider must implement the same API.
+Every provider must implement the same core API.
 
 ---
 
@@ -42,105 +42,81 @@ Ready
 
 ---
 
-# Required Interfaces
+# Core DatabaseProvider Contract (Mandatory)
 
-Every provider must implement:
+Every database provider must implement these seven methods:
 
-## Connection
+## Connection Lifecycle
 
-connect()
+connect(context)
 
-disconnect()
+disconnect(context)
 
-health()
+health(context)
+
+## CRUD Operations
+
+select(table, query, context)
+
+insert(table, records, context)
+
+update(table, values, filters, context)
+
+delete(table, filters, context)
 
 ---
 
-## Installation
+# Optional Capabilities
 
-isInstalled()
+The following capabilities are NOT required by the core contract. A provider that implements
+a capability must expose its complete contract. Providers without a capability remain valid
+core database providers.
 
-install()
+## TransactionCapability
 
-upgrade()
+transaction(callback, context)
+
+## SchemaCapability
+
+createTable(name, definition, context)
+
+updateTable(name, definition, context)
+
+deleteTable(name, context)
 
 ---
+
+# Responsibilities Outside the Provider Contract
+
+The following are NOT part of the DatabaseProvider contract:
 
 ## Migrations
 
-getCurrentVersion()
+isInstalled(), install(), upgrade(), getCurrentVersion(), runMigration(), rollback()
 
-runMigration(version)
-
-rollback(version)
-
----
-
-## Database
-
-createTable()
-
-updateTable()
-
-deleteTable()
-
-insert()
-
-update()
-
-delete()
-
-select()
-
-transaction()
-
----
+Migration orchestration is owned by Kubine, not embedded in the provider contract.
 
 ## Storage
 
-createBucket()
+createBucket(), deleteBucket(), upload(), download(), remove(), list()
 
-deleteBucket()
-
-upload()
-
-download()
-
-remove()
-
-list()
-
----
+Storage is a separate concern. No StorageProvider contract exists yet.
 
 ## Authentication
 
-login()
+login(), logout(), register(), refreshSession(), currentUser(), roles(), permissions()
 
-logout()
-
-register()
-
-refreshSession()
-
-currentUser()
-
-roles()
-
-permissions()
-
----
+Authentication is a separate concern. No AuthProvider contract exists yet.
 
 ## Module Installation
 
-installModule()
+installModule(), uninstallModule(), updateModule()
 
-uninstallModule()
-
-updateModule()
+Module installation is a separate concern.
 
 ---
 
-## Events
+# Events
 
 Provider should emit:
 
@@ -149,16 +125,6 @@ database.connected
 database.disconnected
 
 database.error
-
-migration.started
-
-migration.finished
-
-module.installed
-
-module.updated
-
-module.removed
 
 ---
 
