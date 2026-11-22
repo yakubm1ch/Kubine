@@ -1,8 +1,8 @@
 export const supabaseConfig = {
 
-  url: import.meta.env.VITE_ENGINE_SUPABASE_URL,
+  url: import.meta.env?.VITE_ENGINE_SUPABASE_URL ?? null,
 
-  anonKey: import.meta.env.VITE_ENGINE_SUPABASE_ANON_KEY,
+  anonKey: import.meta.env?.VITE_ENGINE_SUPABASE_ANON_KEY ?? null,
 
 };
 

@@ -2,32 +2,35 @@ import { createClient } from "@supabase/supabase-js";
 
 import supabaseConfig from "../config/supabase.config.js";
 
-const {
+const { url, anonKey } = supabaseConfig;
 
-  url,
+let client = null;
 
-  anonKey
+export function getSupabaseClient() {
+  if (client === null) {
+    if (!url) {
+      throw new Error("Supabase URL is missing.");
+    }
 
-} = supabaseConfig;
+    if (!anonKey) {
+      throw new Error("Supabase anonymous key is missing.");
+    }
 
-if (!url) {
+    client = createClient(url, anonKey);
+  }
 
-  throw new Error("Supabase URL is missing.");
-
+  return client;
 }
 
-if (!anonKey) {
-
-  throw new Error("Supabase anonymous key is missing.");
-
+export function resetSupabaseClient() {
+  client = null;
 }
 
-export const supabaseClient = createClient(
+export function setSupabaseClient(mockClient) {
+  client = mockClient;
+}
 
-  url,
-
-  anonKey
-
-);
-
-export default supabaseClient;
+export default {
+  getClient: getSupabaseClient,
+  reset: resetSupabaseClient,
+};
