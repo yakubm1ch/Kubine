@@ -16,6 +16,28 @@ class TestProvider {
   constructor(name = "test") {
     this.name = name;
   }
+
+  connect() {}
+
+  disconnect() {}
+
+  health() {}
+
+  createTable() {}
+
+  updateTable() {}
+
+  deleteTable() {}
+
+  insert() {}
+
+  update() {}
+
+  delete() {}
+
+  select() {}
+
+  transaction() {}
 }
 
 const provider =

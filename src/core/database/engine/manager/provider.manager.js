@@ -1,7 +1,12 @@
 import { providerRegistry } from "../registry/provider.registry.js";
 import { providerFactory } from "../factory/provider.factory.js";
+import { ProviderValidator } from "../validators/provider.validator.js";
 
 class ProviderManager {
+  constructor() {
+    this.instances = new Map();
+  }
+
   /**
    * Validate provider name.
    *
@@ -94,6 +99,8 @@ class ProviderManager {
 
     providerRegistry.unregister(name);
 
+    this.instances.delete(name);
+
     return this;
   }
 
@@ -113,7 +120,8 @@ class ProviderManager {
    * Resolve a registered provider.
    *
    * Constructors/factory functions are instantiated lazily
-   * and the resulting instance is cached in the registry.
+   * and the resulting instance is cached in the manager's
+   * instance cache, separate from the provider definition.
    *
    * @param {string} name
    * @returns {object}
@@ -121,26 +129,43 @@ class ProviderManager {
   get(name) {
     name = this.validateName(name);
 
+    if (this.instances.has(name)) {
+      return this.instances.get(name);
+    }
+
     if (!providerRegistry.has(name)) {
       throw new Error(
         `Database provider "${name}" is not registered.`
       );
     }
 
-    let provider =
+    const definition =
       providerRegistry.get(name);
 
-    if (typeof provider === "function") {
+    let provider;
+
+    if (typeof definition === "function") {
       provider =
-        providerFactory.create(provider);
+        providerFactory.create(definition);
 
-      this.validateProvider(provider);
+      ProviderValidator.validate(provider);
 
-      providerRegistry.register(
+      this.instances.set(
         name,
         provider
       );
+
+      return provider;
     }
+
+    provider = definition;
+
+    ProviderValidator.validate(provider);
+
+    this.instances.set(
+      name,
+      provider
+    );
 
     return provider;
   }
@@ -196,6 +221,8 @@ class ProviderManager {
    */
   clear() {
     providerRegistry.clear();
+
+    this.instances.clear();
 
     return this;
   }

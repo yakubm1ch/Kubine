@@ -2,56 +2,52 @@ import assert from "node:assert/strict";
 
 import ProviderValidator from "../validators/provider.validator.js";
 
+import DatabaseProvider from "../../contracts/DatabaseProvider.interface.js";
+
 console.log(
   "[Test] Starting ProviderValidator test."
 );
 
 /*
  * ============================================================
- * VALID PROVIDER
+ * CORE CONTRACT
  * ============================================================
  */
 
-class ValidProvider {
+class CoreCompleteProvider {
   async connect() {}
   async disconnect() {}
   async health() {}
-
-  async createTable() {}
-  async updateTable() {}
-  async deleteTable() {}
 
   async insert() {}
   async update() {}
   async delete() {}
   async select() {}
-
-  async transaction() {}
 }
 
-const validProvider =
-  new ValidProvider();
+const coreCompleteProvider =
+  new CoreCompleteProvider();
 
 assert.equal(
-  ProviderValidator.validate(validProvider),
+  ProviderValidator.validate(coreCompleteProvider),
   true,
-  "A complete provider must pass validation."
+  "A provider implementing all seven core methods must pass validation."
 );
 
 assert.equal(
-  ProviderValidator.isValid(validProvider),
+  ProviderValidator.isValid(coreCompleteProvider),
   true,
-  "isValid() must return true for a valid provider."
+  "isValid() must return true for a core-valid provider."
 );
 
 assert.deepEqual(
-  ProviderValidator.getMissingMethods(validProvider),
+  ProviderValidator.getMissingMethods(coreCompleteProvider),
   [],
-  "A valid provider must have no missing methods."
+  "A core-valid provider must have no missing core methods."
 );
 
 console.log(
-  "[Test] ✓ Valid provider passed."
+  "[Test] ✓ Core complete provider passed."
 );
 
 /*
@@ -75,7 +71,7 @@ assert.equal(
 assert.deepEqual(
   ProviderValidator.getMissingMethods(),
   ProviderValidator.requiredMethods,
-  "Undefined provider must report all required methods as missing."
+  "Undefined provider must report all core required methods as missing."
 );
 
 console.log(
@@ -84,11 +80,11 @@ console.log(
 
 /*
  * ============================================================
- * MISSING METHODS
+ * MISSING CORE METHOD
  * ============================================================
  */
 
-class IncompleteProvider {
+class IncompleteCoreProvider {
   async connect() {}
   async disconnect() {}
   async health() {}
@@ -96,130 +92,271 @@ class IncompleteProvider {
   async insert() {}
   async update() {}
   async delete() {}
-  async select() {}
 
-  async transaction() {}
+  // Missing select()
 }
 
-const incompleteProvider =
-  new IncompleteProvider();
+const incompleteCoreProvider =
+  new IncompleteCoreProvider();
 
-const missingMethods =
+const missingCoreMethods =
   ProviderValidator.getMissingMethods(
-    incompleteProvider
+    incompleteCoreProvider
   );
 
 assert.deepEqual(
-  missingMethods,
-  [
-    "createTable",
-    "updateTable",
-    "deleteTable",
-  ],
-  "Validator must report every missing required method."
+  missingCoreMethods,
+  ["select"],
+  "Validator must report every missing core required method."
 );
 
 assert.equal(
   ProviderValidator.isValid(
-    incompleteProvider
+    incompleteCoreProvider
   ),
   false,
-  "Incomplete provider must be invalid."
+  "Incomplete core provider must be invalid."
 );
 
-/*
- * validate() is fail-fast.
- *
- * It must reject the provider as soon as the first
- * missing required method is encountered.
- */
 assert.throws(
   () =>
     ProviderValidator.validate(
-      incompleteProvider
+      incompleteCoreProvider
     ),
-  /createTable/,
-  "Validation error must identify the first missing required method."
+  /select/,
+  "Validation error must identify the missing required core method."
 );
 
 console.log(
-  "[Test] ✓ Missing method detection passed."
+  "[Test] ✓ Missing core method detection passed."
 );
 
 /*
  * ============================================================
- * NON-FUNCTION MEMBERS
+ * NON-FUNCTION CORE MEMBER
  * ============================================================
  */
 
-class InvalidMemberProvider {
+class InvalidCoreMemberProvider {
   connect = "not-a-function";
 
   async disconnect() {}
   async health() {}
 
-  async createTable() {}
-  async updateTable() {}
-  async deleteTable() {}
-
   async insert() {}
   async update() {}
   async delete() {}
   async select() {}
-
-  async transaction() {}
 }
 
-const invalidMemberProvider =
-  new InvalidMemberProvider();
+const invalidCoreMemberProvider =
+  new InvalidCoreMemberProvider();
 
 assert.equal(
   ProviderValidator.isValid(
-    invalidMemberProvider
+    invalidCoreMemberProvider
   ),
   false,
-  "A required member that is not a function must invalidate the provider."
+  "A required core member that is not a function must invalidate the provider."
 );
 
 assert.deepEqual(
   ProviderValidator.getMissingMethods(
-    invalidMemberProvider
+    invalidCoreMemberProvider
   ),
   ["connect"],
-  "Non-function required members must be reported as missing."
+  "Non-function required core members must be reported as missing."
 );
 
 assert.throws(
   () =>
     ProviderValidator.validate(
-      invalidMemberProvider
+      invalidCoreMemberProvider
     ),
   /connect/,
-  "Validation error must identify the invalid required member."
+  "Validation error must identify the invalid required core member."
 );
 
 console.log(
-  "[Test] ✓ Non-function member detection passed."
+  "[Test] ✓ Non-function core member detection passed."
 );
 
 /*
  * ============================================================
- * OPTIONAL CAPABILITIES
- *
- * A provider does not need to expose auth/storage/realtime/
- * functions directly to satisfy the core DatabaseProvider
- * contract.
+ * PROVIDER WITHOUT OPTIONAL CAPABILITIES
  * ============================================================
+ *
+ * A provider implementing only the seven core methods must
+ * still pass core validation. Optional capabilities are not
+ * required.
  */
 
-class DatabaseOnlyProvider {
+class CoreOnlyProvider {
   async connect() {}
   async disconnect() {}
   async health() {}
 
+  async insert() {}
+  async update() {}
+  async delete() {}
+  async select() {}
+}
+
+const coreOnlyProvider =
+  new CoreOnlyProvider();
+
+assert.equal(
+  ProviderValidator.validate(coreOnlyProvider),
+  true,
+  "A core-only provider must pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isSchemaCapable(coreOnlyProvider),
+  false,
+  "A core-only provider must not be schema capable."
+);
+
+assert.equal(
+  ProviderValidator.isTransactionCapable(coreOnlyProvider),
+  false,
+  "A core-only provider must not be transaction capable."
+);
+
+console.log(
+  "[Test] ✓ Core-only provider passes core validation."
+);
+
+/*
+ * ============================================================
+ * PROVIDER EXTENDING DATABASEPROVIDER WITH CORE METHODS ONLY
+ * ============================================================
+ *
+ * A provider that inherits from DatabaseProvider but implements
+ * only the seven core methods must pass core validation and
+ * must NOT be falsely detected as schema- or transaction-capable
+ * through inherited stubs.
+ */
+
+class CoreOnlyInheritedProvider extends DatabaseProvider {
+  async connect() {}
+
+  async disconnect() {}
+
+  async health() {}
+
+  async insert() {}
+
+  async update() {}
+
+  async delete() {}
+
+  async select() {}
+}
+
+const coreOnlyInheritedProvider =
+  new CoreOnlyInheritedProvider();
+
+assert.equal(
+  ProviderValidator.validate(coreOnlyInheritedProvider),
+  true,
+  "A DatabaseProvider subclass with core methods must pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isValid(coreOnlyInheritedProvider),
+  true,
+  "isValid() must return true for a core-valid inherited provider."
+);
+
+assert.equal(
+  ProviderValidator.isSchemaCapable(coreOnlyInheritedProvider),
+  false,
+  "A DatabaseProvider subclass without schema methods must not be schema capable."
+);
+
+assert.equal(
+  ProviderValidator.isTransactionCapable(coreOnlyInheritedProvider),
+  false,
+  "A DatabaseProvider subclass without transaction method must not be transaction capable."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingSchemaMethods(coreOnlyInheritedProvider),
+  [
+    "createTable",
+    "updateTable",
+    "deleteTable",
+  ],
+  "Validator must report all schema methods as missing for a core-only inherited provider."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingTransactionMethods(coreOnlyInheritedProvider),
+  ["transaction"],
+  "Validator must report transaction as missing for a core-only inherited provider."
+);
+
+console.log(
+  "[Test] ✓ Core-only inherited provider passes core validation without false capability positives."
+);
+
+/*
+ * ============================================================
+ * VALID OPTIONAL CAPABILITY: SCHEMA
+ * ============================================================
+ */
+
+class SchemaCapableProvider {
+  async connect() {}
+  async disconnect() {}
+  async health() {}
+
+  async insert() {}
+  async update() {}
+  async delete() {}
+  async select() {}
+
   async createTable() {}
   async updateTable() {}
   async deleteTable() {}
+}
+
+const schemaCapableProvider =
+  new SchemaCapableProvider();
+
+assert.equal(
+  ProviderValidator.validate(schemaCapableProvider),
+  true,
+  "A schema-capable provider must still pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isSchemaCapable(schemaCapableProvider),
+  true,
+  "A provider implementing all schema methods must be schema capable."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingSchemaMethods(schemaCapableProvider),
+  [],
+  "A schema-capable provider must have no missing schema methods."
+);
+
+console.log(
+  "[Test] ✓ Valid SchemaCapability passed."
+);
+
+/*
+ * ============================================================
+ * VALID OPTIONAL CAPABILITY: TRANSACTION
+ * ============================================================
+ */
+
+class TransactionCapableProvider {
+  async connect() {}
+  async disconnect() {}
+  async health() {}
 
   async insert() {}
   async update() {}
@@ -229,19 +366,138 @@ class DatabaseOnlyProvider {
   async transaction() {}
 }
 
-const databaseOnlyProvider =
-  new DatabaseOnlyProvider();
+const transactionCapableProvider =
+  new TransactionCapableProvider();
 
 assert.equal(
-  ProviderValidator.validate(
-    databaseOnlyProvider
-  ),
+  ProviderValidator.validate(transactionCapableProvider),
   true,
-  "A provider must not be required to expose optional capabilities."
+  "A transaction-capable provider must still pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isTransactionCapable(transactionCapableProvider),
+  true,
+  "A provider implementing the transaction method must be transaction capable."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingTransactionMethods(transactionCapableProvider),
+  [],
+  "A transaction-capable provider must have no missing transaction methods."
 );
 
 console.log(
-  "[Test] ✓ Optional capability separation passed."
+  "[Test] ✓ Valid TransactionCapability passed."
+);
+
+/*
+ * ============================================================
+ * INCOMPLETE OPTIONAL CAPABILITY: SCHEMA
+ * ============================================================
+ */
+
+class IncompleteSchemaProvider {
+  async connect() {}
+  async disconnect() {}
+  async health() {}
+
+  async insert() {}
+  async update() {}
+  async delete() {}
+  async select() {}
+
+  async createTable() {}
+  async updateTable() {}
+
+  // Missing deleteTable()
+}
+
+const incompleteSchemaProvider =
+  new IncompleteSchemaProvider();
+
+assert.equal(
+  ProviderValidator.validate(incompleteSchemaProvider),
+  true,
+  "A provider missing an optional capability method must still pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isSchemaCapable(incompleteSchemaProvider),
+  false,
+  "A provider with an incomplete schema capability must not be schema capable."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingSchemaMethods(incompleteSchemaProvider),
+  ["deleteTable"],
+  "Validator must report missing schema capability methods."
+);
+
+assert.throws(
+  () =>
+    ProviderValidator.validateSchemaCapability(
+      incompleteSchemaProvider
+    ),
+  /deleteTable/,
+  "Capability validation error must identify the missing schema method."
+);
+
+console.log(
+  "[Test] ✓ Incomplete SchemaCapability fails capability validation."
+);
+
+/*
+ * ============================================================
+ * INCOMPLETE OPTIONAL CAPABILITY: TRANSACTION
+ * ============================================================
+ */
+
+class IncompleteTransactionProvider {
+  async connect() {}
+  async disconnect() {}
+  async health() {}
+
+  async insert() {}
+  async update() {}
+  async delete() {}
+  async select() {}
+
+  // Missing transaction()
+}
+
+const incompleteTransactionProvider =
+  new IncompleteTransactionProvider();
+
+assert.equal(
+  ProviderValidator.validate(incompleteTransactionProvider),
+  true,
+  "A provider missing an optional transaction method must still pass core validation."
+);
+
+assert.equal(
+  ProviderValidator.isTransactionCapable(incompleteTransactionProvider),
+  false,
+  "A provider without the transaction method must not be transaction capable."
+);
+
+assert.deepEqual(
+  ProviderValidator.getMissingTransactionMethods(incompleteTransactionProvider),
+  ["transaction"],
+  "Validator must report missing transaction capability methods."
+);
+
+assert.throws(
+  () =>
+    ProviderValidator.validateTransactionCapability(
+      incompleteTransactionProvider
+    ),
+  /transaction/,
+  "Capability validation error must identify the missing transaction method."
+);
+
+console.log(
+  "[Test] ✓ Incomplete TransactionCapability fails capability validation."
 );
 
 /*

@@ -22,6 +22,28 @@ class TestProvider {
   constructor() {
     this.created = true;
   }
+
+  connect() {}
+
+  disconnect() {}
+
+  health() {}
+
+  createTable() {}
+
+  updateTable() {}
+
+  deleteTable() {}
+
+  insert() {}
+
+  update() {}
+
+  delete() {}
+
+  select() {}
+
+  transaction() {}
 }
 
 let constructorCalls = 0;
@@ -31,6 +53,28 @@ class CountingProvider {
     constructorCalls += 1;
     this.created = true;
   }
+
+  connect() {}
+
+  disconnect() {}
+
+  health() {}
+
+  createTable() {}
+
+  updateTable() {}
+
+  deleteTable() {}
+
+  insert() {}
+
+  update() {}
+
+  delete() {}
+
+  select() {}
+
+  transaction() {}
 }
 
 /*
@@ -172,8 +216,14 @@ assert.equal(
 
 assert.strictEqual(
   providerRegistry.get("counting"),
+  CountingProvider,
+  "Registry must retain the constructor definition after lazy resolution."
+);
+
+assert.strictEqual(
+  providerManager.get("counting"),
   firstResolved,
-  "Resolved provider instance must replace its constructor in the registry."
+  "Manager must return the same cached instance from its own cache."
 );
 
 console.log(
@@ -332,9 +382,139 @@ console.log(
 
 /*
  * ============================================================
+ * VALIDATION FAILURE DOES NOT CACHE INSTANCE
+ * ============================================================
+ */
+
+class InvalidProvider {
+  constructor() {
+    this.name = "invalid";
+  }
+  // Missing required methods: connect, disconnect, health, etc.
+}
+
+providerManager.register("invalid-lazy", InvalidProvider);
+
+assert.throws(
+  () => providerManager.get("invalid-lazy"),
+  /missing required core method/,
+  "get() must reject invalid provider created from constructor."
+);
+
+// The invalid instance must not be cached: constructor must run again
+assert.throws(
+  () => providerManager.get("invalid-lazy"),
+  /missing required core method/,
+  "get() must not cache an invalid instance; retry must re-attempt construction."
+);
+
+assert.equal(
+  providerManager.has("invalid-lazy"),
+  true,
+  "Provider definition must remain registered even though instance is invalid."
+);
+
+console.log(
+  "[Test] ✓ Validation failure does not cache invalid instance."
+);
+
+/*
+ * ============================================================
+ * FACTORY FAILURE DOES NOT CACHE PARTIAL INSTANCE
+ * ============================================================
+ */
+
+class FailingProvider {
+  constructor() {
+    throw new Error("factory construction failed");
+  }
+}
+
+providerManager.register("failing", FailingProvider);
+
+assert.throws(
+  () => providerManager.get("failing"),
+  /factory construction failed/,
+  "get() must propagate factory construction errors."
+);
+
+// The failed instance must not be cached: retry must re-attempt construction
+assert.throws(
+  () => providerManager.get("failing"),
+  /factory construction failed/,
+  "get() must not cache a partially created instance; retry must re-attempt."
+);
+
+assert.equal(
+  providerManager.has("failing"),
+  true,
+  "Provider definition must remain registered even though factory failed."
+);
+
+console.log(
+  "[Test] ✓ Factory failure does not cache partial instance."
+);
+
+/*
+ * ============================================================
+ * RE-REGISTER AFTER UNREGISTER
+ * ============================================================
+ */
+
+providerManager.register("re-register", instance);
+
+assert.equal(
+  providerManager.has("re-register"),
+  true,
+  "Provider must exist before unregister()."
+);
+
+const reUnregisterResult =
+  providerManager.unregister(
+    "re-register"
+  );
+
+assert.strictEqual(
+  reUnregisterResult,
+  providerManager,
+  "unregister() must return the ProviderManager instance."
+);
+
+assert.equal(
+  providerManager.has("re-register"),
+  false,
+  "Provider must no longer exist after unregister()."
+);
+
+// Re-registering after unregister must work
+providerManager.register(
+  "re-register",
+  new TestProvider()
+);
+
+assert.equal(
+  providerManager.has("re-register"),
+  true,
+  "Provider must be re-registerable after unregister()."
+);
+
+assert.strictEqual(
+  providerManager.get("re-register") instanceof TestProvider,
+  true,
+  "Re-registered provider must be resolvable."
+);
+
+console.log(
+  "[Test] ✓ Re-register after unregister works."
+);
+
+/*
+ * ============================================================
  * MULTIPLE PROVIDERS
  * ============================================================
  */
+
+providerManager.clear();
 
 providerManager.register(
   "first",
