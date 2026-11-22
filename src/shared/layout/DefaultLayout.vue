@@ -4,11 +4,14 @@ import NavBar from "@/shared/layout/NavBar.vue";
 import MobileMenu from "@/shared/layout/MobileMenu.vue";
 import Footer from "@/shared/layout/Footer.vue";
 import { useSettingsStore } from "@/modules/settings/stores/settings.store";
+import { useProjectProfileStore } from "@/modules/settings/stores/projectProfile.store";
 
 const settings = useSettingsStore();
+const projectProfile = useProjectProfileStore();
 
 onMounted(() => {
   settings.loadSettings();
+  projectProfile.load();
 });
 
 const mobileMenuOpen = ref(false);

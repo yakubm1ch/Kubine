@@ -18,6 +18,7 @@ const hero = computed(() =>
 <div class="buttons">
 
   <RouterLink
+    v-if="hero.primaryButtonLink"
     :to="hero.primaryButtonLink"
     class="btn primary"
   >
@@ -25,6 +26,7 @@ const hero = computed(() =>
   </RouterLink>
 
   <RouterLink
+    v-if="hero.secondaryButtonLink"
     :to="hero.secondaryButtonLink"
     class="btn secondary"
   >
