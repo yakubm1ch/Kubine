@@ -8,6 +8,10 @@ import {
 } from "../factory/bootstrap-stage.factory.initializer.js";
 
 import {
+  BootstrapContext,
+} from "../context/bootstrap.context.js";
+
+import {
   BootstrapStageRegistry,
 } from "../registry/bootstrap-stage.registry.js";
 
@@ -146,7 +150,7 @@ export class BootstrapEngine {
   }
 
 
-  async initialize(context = {}) {
+  async initialize(context = null) {
 
     if (this.state === "initializing") {
       throw new Error(
@@ -167,9 +171,25 @@ export class BootstrapEngine {
     }
 
 
+    /*
+     * Context contract: accept a BootstrapContext instance, null,
+     * or no argument. Reject anything else before any stage runs.
+     */
+
+    if (
+      context !== null &&
+      context !== undefined &&
+      !(context instanceof BootstrapContext)
+    ) {
+      throw new TypeError(
+        "BootstrapEngine.initialize() requires a BootstrapContext instance, null, or no argument."
+      );
+    }
+
     this.state = "initializing";
 
-    this.context = context;
+    this.context =
+      context ?? new BootstrapContext();
 
     this.stages = [];
 

@@ -160,8 +160,10 @@ export class BootstrapPipeline {
       } catch (rollbackError) {
         return {
           success: false,
-          error: rollbackError,
+          error,
           originalError: error,
+          rollbackError,
+          rollbackErrors: rollbackError?.cause?.rollbackErrors ?? [],
           stages: [],
         };
       }
@@ -284,7 +286,10 @@ export class BootstrapPipeline {
         rollbackErrors,
       };
 
-      this.error = rollbackError;
+      /*
+       * Do not overwrite this.error. It must remain the original
+       * initialization error so callers can always access it.
+       */
 
       throw rollbackError;
     }
