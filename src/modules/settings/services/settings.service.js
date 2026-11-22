@@ -1,4 +1,4 @@
-import ProviderManager from "@/core/database/engine/manager/provider.manager";
+import Database from "@/core/database/adapters/database/database.adapter";
 
 const TABLE = "site_settings";
 

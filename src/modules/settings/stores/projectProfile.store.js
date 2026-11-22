@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import projectProfileService from "@/modules/settings/services/projectProfile.service";
+import projectProfileService from "@/modules/settings/services/projectProfile.service.js";
 
 export const useProjectProfileStore = defineStore("projectProfile", {
 
@@ -10,68 +10,124 @@ export const useProjectProfileStore = defineStore("projectProfile", {
 
     configuration: null,
 
-    loading: false,
+    status: "idle",
 
-    loaded: false,
+    error: null,
+
+    // Internal request tracking. Not part of the public application state;
+    // used for concurrent-request deduplication and stale-response protection.
+    _loadPromise: null,
+
+    _requestId: 0,
 
   }),
 
   getters: {
 
+    loading: (state) => state.status === "loading",
+
+    loaded: (state) => state.status === "loaded",
+
     appearance: (state) =>
-      ConfigurationService.get(state.configuration, "appearance", {}),
+      state.configuration?.appearance ?? {},
 
     logos: (state) =>
-      ConfigurationService.get(state.configuration, "logos", {}),
+      state.configuration?.logos ?? {},
 
     hero: (state) =>
-      ConfigurationService.get(state.configuration, "hero", {}),
+      state.configuration?.hero ?? {},
 
     homepage: (state) =>
-      ConfigurationService.get(state.configuration, "homepage", {}),
+      state.configuration?.homepage ?? {},
 
     navigation: (state) =>
       state.configuration?.navigation ?? {},
 
     footer: (state) =>
-      ConfigurationService.get(state.configuration, "footer", {}),
+      state.configuration?.footer ?? {},
 
   },
 
   actions: {
 
-    async load() {
+    load() {
 
-      if (this.loaded) return;
+      // Idempotent: successfully resolved states must not repeat.
+      // Both "loaded" and "empty" are terminal success states.
+      if (this.status === "loaded" || this.status === "empty") return;
 
-      this.loading = true;
-
-      try {
-
-        this.profile = await projectProfileService.getActiveProfile();
-
-        this.configuration = this.profile.configuration;
-
-        this.loaded = true;
-
-      } finally {
-
-        this.loading = false;
-
+      // Share the same in-flight promise for concurrent callers.
+      if (this.status === "loading" && this._loadPromise) {
+        return this._loadPromise;
       }
+
+      // New generation for this request.
+      const requestId = ++this._requestId;
+
+      this.status = "loading";
+      this.error = null;
+      this.configuration = null;
+      this.profile = null;
+
+      this._loadPromise = projectProfileService
+        .getActiveProfile()
+        .then((profile) => {
+
+          // Stale result protection: discard if a newer request superseded this one.
+          if (requestId !== this._requestId) return;
+
+          if (!profile) {
+
+            // No active profile exists — this is a valid empty state.
+            this.status = "empty";
+            this.configuration = null;
+            this.profile = null;
+
+          } else {
+
+            // Active profile retrieved successfully.
+            this.status = "loaded";
+            this.profile = profile;
+            this.configuration = profile?.configuration ?? null;
+
+          }
+
+        })
+        .catch((err) => {
+
+          // Stale rejection protection: discard if superseded.
+          if (requestId !== this._requestId) return;
+
+          // Request failed — expose diagnostic information without
+          // credentials or sensitive database details.
+          this.status = "error";
+          this.error = {
+            message: err?.message || String(err),
+            code: err?.code || null,
+          };
+
+        })
+        .finally(() => {
+
+          // Only clear the shared promise reference if this is still current.
+          // A stale finally handler must not clear tracking for a newer request.
+          if (requestId === this._requestId) {
+            this._loadPromise = null;
+          }
+
+        });
+
+      return this._loadPromise;
 
     },
 
     updateConfiguration(path, value) {
 
-      this.configuration = ConfigurationService.set(
+      const keys = String(path).split(".");
 
-        this.configuration,
-
-        path,
-
-        value
-
+      this.configuration = keys.reduceRight(
+        (acc, key) => ({ [key]: acc }),
+        value,
       );
 
     },
@@ -82,11 +138,17 @@ export const useProjectProfileStore = defineStore("projectProfile", {
 
       this.configuration = null;
 
-      this.loading = false;
+      this.status = "idle";
 
-      this.loaded = false;
+      this.error = null;
 
-    }
+      // Invalidate any pending request so its late result cannot overwrite
+      // the reset state.
+      this._requestId++;
+
+      this._loadPromise = null;
+
+    },
 
   }
 
