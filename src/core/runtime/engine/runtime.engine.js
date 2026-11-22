@@ -1,15 +1,12 @@
 import { providerEngine } from "../database/engine/provider.engine.js";
-
-const providerName =
-    import.meta.env.VITE_DATABASE_PROVIDER ||
-    "supabase";
+import { databaseProviderName } from "../../config/database.config";
 
 export const databaseRuntime = {
 
-    provider: providerName,
+    provider: databaseProviderName,
 
     getProvider() {
-        return providerEngine.getProvider(this.provider);
+        return providerEngine.get(this.provider);
     }
 
 };
