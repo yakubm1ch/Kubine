@@ -5,6 +5,16 @@
 * A database provider is responsible for exposing a stable
 * database lifecycle and persistence API to the Database Engine.
 *
+* The mandatory contract consists of connection lifecycle
+* (connect, disconnect, health) and CRUD operations
+* (select, insert, update, delete).
+*
+* Schema management (createTable, updateTable, deleteTable)
+* and transactions (transaction) are optional capabilities.
+* Providers that implement them must expose the complete
+* capability contract, but they are not required by the
+* core DatabaseProvider contract.
+*
 * Provider-specific capabilities such as authentication,
 * storage, realtime and serverless functions must be exposed
 * by the concrete provider implementation without leaking
@@ -48,50 +58,6 @@ export class DatabaseProvider {
   async health(context = {}) {
   throw new Error(
   `${this.constructor.name}.health() must be implemented.`
-  );
-  }
-
-/**
-
-* Create a database table.
-*
-* @param {string} name
-* @param {object} definition
-* @param {object} context
-* @returns {Promise<unknown>}
-  */
-  async createTable(name, definition, context = {}) {
-  throw new Error(
-  `${this.constructor.name}.createTable() must be implemented.`
-  );
-  }
-
-/**
-
-* Update a database table.
-*
-* @param {string} name
-* @param {object} definition
-* @param {object} context
-* @returns {Promise<unknown>}
-  */
-  async updateTable(name, definition, context = {}) {
-  throw new Error(
-  `${this.constructor.name}.updateTable() must be implemented.`
-  );
-  }
-
-/**
-
-* Delete a database table.
-*
-* @param {string} name
-* @param {object} context
-* @returns {Promise<unknown>}
-  */
-  async deleteTable(name, context = {}) {
-  throw new Error(
-  `${this.constructor.name}.deleteTable() must be implemented.`
   );
   }
 
@@ -153,20 +119,6 @@ export class DatabaseProvider {
   async select(table, query = {}, context = {}) {
   throw new Error(
   `${this.constructor.name}.select() must be implemented.`
-  );
-  }
-
-/**
-
-* Execute operations inside a provider transaction.
-*
-* @param {Function} callback
-* @param {object} context
-* @returns {Promise<unknown>}
-  */
-  async transaction(callback, context = {}) {
-  throw new Error(
-  `${this.constructor.name}.transaction() must be implemented.`
   );
   }
   }
